@@ -1,0 +1,25 @@
+.classstyle {
+  width: 18rem;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+    0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+
+.topic {
+  font-weight: bold;
+  color: black;
+  text-transform: uppercase;
+  padding-top: 7%;
+}
+
+.btnstyle {
+  position: relative;
+  left: 40px;
+  text-decoration: none;
+  display: none;
+}
+
+.card-img-top {
+  height: 100px;
+  width: 100px;
+}
