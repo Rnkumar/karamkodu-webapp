@@ -1,11 +1,22 @@
 import React, { Component } from "react";
 import "./Profile.css";
-import one from "./../../images/profile/1.png";
-import two from "./../../images/profile/2.png";
-import three from "./../../images/profile/3.png";
+import rehabilitationImage from "./../../images/profile/1.png";
+import environmentImage from "./../../images/profile/2.png";
+import educationImage from "./../../images/profile/3.png";
+import PopUp from "./../../components/PopUp/PopUp";
+import popUpData from "./data";
 
 class Profile extends Component {
-  topElement() {
+  constructor(props) {
+    super(props);
+    this.state = {
+      environment: true,
+      education: true,
+      rehabilitation: true
+    };
+  }
+
+  renderTitle() {
     return (
       <center>
         <h3 className="topic">Profile</h3>
@@ -19,126 +30,25 @@ class Profile extends Component {
     );
   }
 
+  processStyleForBtn(name, styleName) {
+    name = name.toLowerCase();
+    let fields = this.state;
+    return fields[name] ? styleName : "btnstyle";
+  }
+
   check(name) {}
 
-  environmentCard() {
+  renderButton(dataTargetId, name, btnId, text) {
     return (
-      <>
-        <br />
-        <div class="card" className="cardstyle" onclick="check('environment')">
-          <center>
-            <img class="card-img-top" src={two} alt="Env logo" />
-          </center>
-          <div class="card-body">
-            <center>
-              <h5 class="card-title">
-                <b>Environment</b>
-              </h5>
-            </center>
-          </div>
-        </div>
-        <br />
-        <button
-          type="button"
-          class="btn btn-dark"
-          id="envbtn"
-          className="btnstyle"
-          data-toggle="modal"
-          data-target="#env"
-        >
-          Register
-        </button>
-      </>
-    );
-  }
-
-  educationCard() {
-    return (
-      <>
-        <br />
-        <div class="card" onclick="check('education')" className="cardstyle">
-          <center>
-            <img class="card-img-top" src={three} alt="Card image cap" />
-          </center>
-          <div class="card-body">
-            <center>
-              <h5 class="card-title">
-                <b>Education</b>
-              </h5>
-            </center>
-          </div>
-        </div>
-        <br />
-        <a
-          href="#"
-          class="btn btn-dark mem_bt"
-          id="edubtn1"
-          data-toggle="modal"
-          data-target="#edu_mem"
-          style={{ display: "none" }}
-        >
-          Register as Member
-        </a>
-        <br />
-        <br />
-        <a
-          href="#"
-          class="btn btn-dark lead_bt"
-          style={{ display: "none" }}
-          id="edubtn2"
-          data-toggle="modal"
-          data-target="#edu_lead"
-        >
-          Register as Leader
-        </a>
-      </>
-    );
-  }
-
-  rehabilitationCard() {
-    return (
-      <>
-        <br />
-        <div
-          class="card"
-          onclick="check('rehabilitation')"
-          className="cardstyle"
-        >
-          <center>
-            <img class="card-img-top" src={one} alt="Card image cap" />
-          </center>
-          <div class="card-body">
-            <center>
-              <h5 class="card-title">
-                <b>Rehabilitation</b>
-              </h5>
-            </center>
-          </div>
-        </div>
-        <br />
-        <a
-          href="#"
-          class="btn btn-dark mem_bt"
-          id="rehbtn1"
-          style={{ display: "none" }}
-          data-toggle="modal"
-          data-target="#reh_mem"
-        >
-          Register as Member
-        </a>
-        <br />
-        <br />
-        <a
-          href="#"
-          class="btn btn-dark lead_bt"
-          data-toggle="modal"
-          id="rehbtn2"
-          data-target="#reh_lead"
-          style={{ display: "none" }}
-        >
-          Register as Leader
-        </a>
-      </>
+      <button
+        type="button"
+        id={btnId}
+        className={this.processStyleForBtn(name, "btn btn-dark mem_bt")}
+        data-toggle="modal"
+        data-target={dataTargetId}
+      >
+        {text}
+      </button>
     );
   }
 
@@ -148,61 +58,73 @@ class Profile extends Component {
         <br />
         <div
           class="card"
-          onclick={this.check(name.toLowerCase())}
+          onClick={this.check(name.toLowerCase())}
           className="cardstyle"
         >
           <center>
-            <img class="card-img-top" src={image} alt={name + " logo"} />
+            <img className="card-img-top" src={image} alt={name + " logo"} />
           </center>
-          <div class="card-body">
+          <div className="card-body">
             <center>
-              <h5 class="card-title">
+              <h5 className="card-title">
                 <b>{name}</b>
               </h5>
             </center>
           </div>
         </div>
         <br />
-        <button
-          type="button"
-          class="btn btn-dark mem_bt"
-          id={id + "btn1"}
-          style={{ display: "none" }}
-          data-toggle="modal"
-          data-target={"#" + id + "_mem"}
-        >
-          Register as Member
-        </button>
-        <br />
-        <br />
-        <button
-          class="btn btn-dark lead_bt"
-          data-toggle="modal"
-          id={id + "btn2"}
-          data-target={"#" + id + "lead"}
-          style={{ display: "none" }}
-        >
-          Register as Leader
-        </button>
+        {name.toLowerCase() === "environment" ? (
+          this.renderButton("#env", name, "envbtn", "Register")
+        ) : (
+          <>
+            {this.renderButton(
+              "#" + id + "_mem",
+              name,
+              id + "btn1",
+              "Register as Member"
+            )}
+            <br />
+            <br />
+            {this.renderButton(
+              "#" + id + "_lead",
+              name,
+              id + "btn2",
+              "Register as Leader"
+            )}
+          </>
+        )}
       </>
     );
   }
 
   render() {
     return (
-      <div class="page-wrapper">
-        <div class="container" style={{ color: "black" }}>
-          {this.topElement()}
-          <div class="row mob_row">
-            <div class="col-md-4">{this.environmentCard()}</div>
-            <div class="col-md-4">
-              {this.renderCard("Education", "edu", three)}
+      <div className="page-wrapper">
+        <div className="container" style={{ color: "black" }}>
+          {this.renderTitle()}
+          <div className="row mob_row">
+            <div className="col-md-4">
+              {this.renderCard("Environment", "env", environmentImage)}
             </div>
-            <div class="col-md-4">
-              {this.renderCard("Rehabilitation", "reh", one)}
+            <div className="col-md-4">
+              {this.renderCard("Education", "edu", educationImage)}
+            </div>
+            <div className="col-md-4">
+              {this.renderCard("Rehabilitation", "reh", rehabilitationImage)}
             </div>
           </div>
         </div>
+        {popUpData.map((item, id) => (
+          <PopUp
+            key={id}
+            id={item.id}
+            teamName={item.teamName}
+            profileKey={item.profileKey}
+            footerId={item.footerId}
+            isLeaderRequest={item.isLeaderRequest}
+            info={item.info}
+          />
+        ))}
       </div>
     );
   }
