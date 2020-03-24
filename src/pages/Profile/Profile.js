@@ -123,6 +123,9 @@ class Profile extends Component {
             footerId={item.footerId}
             isLeaderRequest={item.isLeaderRequest}
             info={item.info}
+            redirectToWait={() => {
+              this.props.history.push("waiting-for-approval");
+            }}
           />
         ))}
       </div>

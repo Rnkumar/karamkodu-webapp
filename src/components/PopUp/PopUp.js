@@ -1,18 +1,56 @@
 import React, { Component } from "react";
 import profileImage from "./../../images/profile/profile.png";
+import { verifyUserId, joinTeamRequest } from "./../../backend/user";
 
 export default class PopUp extends Component {
   constructor(props) {
     super(props);
-    this.state = { leaderId: "", centerName: "" };
+    this.state = {
+      leaderId: "",
+      centerName: "",
+      isVisible: false,
+      first_name: "",
+      last_name: ""
+    };
   }
 
-  verifyUserId(leaderId, key) {
-    console.log(leaderId);
-    console.log(this.state.centerName);
+  verifyUserId(leaderId) {
+    leaderId = leaderId.replace("KK", "");
+    verifyUserId(leaderId)
+      .then(resp => {
+        if (resp["message"] === "success") {
+          this.setState({
+            isVisible: true,
+            first_name: resp["data"].first_name,
+            last_name: resp["data"].last_name
+          });
+        } else {
+          alert("No valid user found");
+        }
+      })
+      .catch(err => {
+        alert("Try Again");
+        console.log(err);
+      });
   }
 
-  joinTeam(teamName, leaderId, centerName) {}
+  joinTeam(teamName, leaderId, centerName) {
+    leaderId = leaderId.replace("KK", "");
+    const userId = localStorage.getItem("user_id");
+    joinTeamRequest(teamName, leaderId, centerName, userId)
+      .then(res => {
+        if (res["message"] === "success") {
+          alert("success");
+          this.props.redirectToWait();
+        } else {
+          alert(res["message"]);
+        }
+      })
+      .catch(err => {
+        alert("Try Again Later");
+        console.log(err);
+      });
+  }
 
   renderHeader(title) {
     return (
@@ -71,34 +109,36 @@ export default class PopUp extends Component {
             )}
             <input
               type="button"
-              onClick={() => this.verifyUserId(this.state.leaderId, profileKey)}
+              onClick={() => this.verifyUserId(this.state.leaderId)}
               className="btn btn-dark"
               value="Verify"
             />
           </div>
-          <center className="profile" id={profileKey}>
-            <div>
-              <img
-                src={profileImage}
-                alt="profile"
-                style={{ width: "150px" }}
-              />
-              <h5>Name1</h5>
-              <h5>Name2</h5>
-              <input
-                type="button"
-                className="btn btn-dark"
-                value="Join"
-                onClick={() =>
-                  this.joinTeam(
-                    teamName,
-                    this.state.leaderId,
-                    this.state.centerName
-                  )
-                }
-              />
-            </div>
-          </center>
+          {this.state.isVisible && (
+            <center className="profile">
+              <div>
+                <img
+                  src={profileImage}
+                  alt="profile"
+                  style={{ width: "150px" }}
+                />
+                <h5>{this.state.first_name}</h5>
+                <h5>{this.state.last_name}</h5>
+                <input
+                  type="button"
+                  className="btn btn-dark"
+                  value="Join"
+                  onClick={() =>
+                    this.joinTeam(
+                      teamName,
+                      this.state.leaderId,
+                      this.state.centerName
+                    )
+                  }
+                />
+              </div>
+            </center>
+          )}
         </form>
       </div>
     );
