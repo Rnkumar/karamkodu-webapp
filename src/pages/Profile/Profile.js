@@ -38,11 +38,10 @@ class Profile extends Component {
 
   check(name) {}
 
-  renderButton(dataTargetId, name, btnId, text) {
+  renderButton(dataTargetId, name, text) {
     return (
       <button
         type="button"
-        id={btnId}
         className={this.processStyleForBtn(name, "btn btn-dark mem_bt")}
         data-toggle="modal"
         data-target={dataTargetId}
@@ -74,23 +73,13 @@ class Profile extends Component {
         </div>
         <br />
         {name.toLowerCase() === "environment" ? (
-          this.renderButton("#env", name, "envbtn", "Register")
+          this.renderButton("#env", name, "Register")
         ) : (
           <>
-            {this.renderButton(
-              "#" + id + "_mem",
-              name,
-              id + "btn1",
-              "Register as Member"
-            )}
+            {this.renderButton("#" + id + "_mem", name, "Register as Member")}
             <br />
             <br />
-            {this.renderButton(
-              "#" + id + "_lead",
-              name,
-              id + "btn2",
-              "Register as Leader"
-            )}
+            {this.renderButton("#" + id + "_lead", name, "Register as Leader")}
           </>
         )}
       </>
