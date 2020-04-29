@@ -11,8 +11,11 @@ class Profile extends Component {
     super(props);
     this.state = {
       environment: true,
-      education: false,
-      rehabilitation: false,
+      education: true,
+      rehabilitation: true,
+      environmentRegisterFlag: false,
+      educationRegisterFlag: false,
+      rehabilitationRegisterFlag: false,
     };
   }
 
@@ -45,6 +48,7 @@ class Profile extends Component {
       <button
         type="button"
         className={this.processStyleForBtn(name, "btn btn-dark mem_bt")}
+        style={{ margin: 10 }}
         data-toggle="modal"
         data-target={dataTargetId}
       >
@@ -53,9 +57,38 @@ class Profile extends Component {
     );
   }
 
-  renderCard(name, id, image) {
+  validateStatus(name) {
+    name = name.toLowerCase();
+    let status = "APPROVED";
+    switch (status) {
+      case "PENDING":
+        this.props.history.push("/waiting-for-approval");
+        break;
+      case "APPROVED":
+        if (name === "environment") {
+          let plantFlag = "PRESENT";
+          if (plantFlag === "ABSENT") {
+            this.props.history.push("/plant");
+          } else {
+            this.props.history.push("/team/"+name);
+          }
+        } else {
+          this.props.history.push("/team");
+        }
+        break;
+      case "NOT_EXISTING":
+      default:
+        let key = name + "RegisterFlag";
+        this.setState({
+          [key]: true,
+        });
+        break;
+    }
+  }
+
+  renderCard(name, id, image, registerFlag) {
     return (
-      <>
+      <button type="button" onClick={(event) => this.validateStatus(name)}>
         <br />
         <div
           class="card"
@@ -73,36 +106,63 @@ class Profile extends Component {
             </center>
           </div>
         </div>
-        <br />
-        {name.toLowerCase() === "environment" ? (
-          this.renderButton("#env", name, "Register")
-        ) : (
-          <>
-            {this.renderButton("#" + id + "_mem", name, "Register as Member")}
-            <br />
-            <br />
-            {this.renderButton("#" + id + "_lead", name, "Register as Leader")}
-          </>
-        )}
-      </>
+        {registerFlag &&
+          (name.toLowerCase() === "environment" ? (
+            this.renderButton("#env", name, "Register")
+          ) : (
+            <>
+              {this.renderButton("#" + id + "_mem", name, "Register as Member")}
+              <br />
+              <br />
+              {this.renderButton(
+                "#" + id + "_lead",
+                name,
+                "Register as Leader"
+              )}
+            </>
+          ))}
+      </button>
     );
   }
 
   renderCards(education, environment, rehabilitation) {
     let dataObject = [];
+
     if (education) {
-      dataObject.push("Education", "edu", educationImage);
+      dataObject.push([
+        "Education",
+        "edu",
+        educationImage,
+        this.state.educationRegisterFlag,
+      ]);
     }
+
     if (environment) {
-      dataObject.push(["Environment", "env", environmentImage]);
+      dataObject.push([
+        "Environment",
+        "env",
+        environmentImage,
+        this.state.environmentRegisterFlag,
+      ]);
     }
+
     if (rehabilitation) {
-      dataObject.push(["Rehabilitation", "reh", rehabilitationImage]);
+      dataObject.push([
+        "Rehabilitation",
+        "reh",
+        rehabilitationImage,
+        this.state.rehabilitationRegisterFlag,
+      ]);
     }
 
     let size = 12 / dataObject.length;
+
+    console.log(dataObject);
+
     return dataObject.map((item, id) => (
-      <div key={id} className={"col-md-" + size}>{this.renderCard(item[0],item[1],item[2])}</div>
+      <div key={id} className={"col-md-" + size}>
+        {this.renderCard(item[0], item[1], item[2], item[3])}
+      </div>
     ));
   }
 
