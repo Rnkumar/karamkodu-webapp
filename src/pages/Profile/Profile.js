@@ -11,10 +11,12 @@ class Profile extends Component {
     super(props);
     this.state = {
       environment: true,
-      education: true,
-      rehabilitation: true
+      education: false,
+      rehabilitation: false,
     };
   }
+
+  componentWillMount() {}
 
   renderTitle() {
     return (
@@ -86,24 +88,57 @@ class Profile extends Component {
     );
   }
 
+  renderCards(education, environment, rehabilitation) {
+    let dataObject = [];
+    if (education) {
+      dataObject.push("Education", "edu", educationImage);
+    }
+    if (environment) {
+      dataObject.push(["Environment", "env", environmentImage]);
+    }
+    if (rehabilitation) {
+      dataObject.push(["Rehabilitation", "reh", rehabilitationImage]);
+    }
+
+    let size = 12 / dataObject.length;
+    return dataObject.map((item, id) => (
+      <div key={id} className={"col-md-" + size}>{this.renderCard(item[0],item[1],item[2])}</div>
+    ));
+  }
+
+  filterPopUp(education, environment, rehabilitation) {
+    let filteredPopUpData = [];
+    if (environment) {
+      filteredPopUpData.push(popUpData[0]);
+    }
+    if (education) {
+      filteredPopUpData.push(popUpData[1]);
+      filteredPopUpData.push(popUpData[2]);
+    }
+    if (rehabilitation) {
+      filteredPopUpData.push(popUpData[3]);
+      filteredPopUpData.push(popUpData[4]);
+    }
+    return filteredPopUpData;
+  }
+
   render() {
+    const { environment, education, rehabilitation } = this.state;
+    const filteredPopUpData = this.filterPopUp(
+      education,
+      environment,
+      rehabilitation
+    );
+
     return (
       <div className="page-wrapper">
         <div className="container" style={{ color: "black" }}>
           {this.renderTitle()}
           <div className="row mob_row">
-            <div className="col-md-4">
-              {this.renderCard("Environment", "env", environmentImage)}
-            </div>
-            <div className="col-md-4">
-              {this.renderCard("Education", "edu", educationImage)}
-            </div>
-            <div className="col-md-4">
-              {this.renderCard("Rehabilitation", "reh", rehabilitationImage)}
-            </div>
+            {this.renderCards(education, environment, rehabilitation)}
           </div>
         </div>
-        {popUpData.map((item, id) => (
+        {filteredPopUpData.map((item, id) => (
           <PopUp
             key={id}
             id={item.id}
