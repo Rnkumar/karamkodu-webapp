@@ -4,14 +4,18 @@ import { connect } from "react-redux";
 
 const TeamRoute = (props) => {
   const { component: Component, ...rest } = props;
-  console.log(props.params);
   const isLoggedIn = props.isLoggedIn;
   const teamFlag = props.teamFlag;
   return (
     <Route
       {...rest}
       render={(properties) => {
-        const teamNameFlag = props[properties.match.params.name.toLowerCase()+"Flag"];
+        const validTeamNames = ["environment","education","rehabilitation"];
+        const teamName = properties.match.params.name.toLowerCase();
+        if(!validTeamNames.includes(teamName)){
+            return <Redirect to="/profile" />;
+        }
+        const teamNameFlag = props[teamName+"Flag"];
         return (isLoggedIn && teamFlag && teamNameFlag) ? (
           <Component {...properties} />
         ) : (

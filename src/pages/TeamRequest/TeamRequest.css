@@ -1,0 +1,16 @@
+.buttonStyle {
+  background: black;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  font-weight: bolder;
+}
+
+.title {
+  font-weight: bold;
+  color: black;
+  text-transform: uppercase;
+  padding-top: 7%;
+  padding-bottom:5%;
+}

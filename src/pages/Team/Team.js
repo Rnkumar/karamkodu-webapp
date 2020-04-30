@@ -17,8 +17,6 @@ class Team extends Component {
     };
   }
 
-  getUrl(type) {}
-
   renderTeam() {
     const team = this.state.teamMembers;
     return team.map((item, id) => (
@@ -43,6 +41,7 @@ class Team extends Component {
   }
 
   render() {
+    const teamName = this.props.match.params.name;
     return (
       <div>
         <center>
@@ -62,7 +61,7 @@ class Team extends Component {
             <center>
               <button
                 type="button"
-                onClick={this.getUrl("request")}
+                onClick={()=>this.props.history.push("/request/"+teamName)}
                 class="btn btn-dark"
               >
                 View Requests
@@ -70,7 +69,7 @@ class Team extends Component {
               &nbsp;&nbsp;&nbsp;
               <button
                 type="button"
-                onClick={this.getUrl("report")}
+                onClick={()=>this.props.history.push("/report/"+teamName)}
                 class="btn btn-dark"
               >
                 Add Report

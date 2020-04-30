@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import "./Login.css";
 import { login } from "./../../backend/auth";
+import { updateToken, updateLoginStatus, updateUserId } from "../../actions";
+import { connect } from "react-redux";
 
 const Login = (props) => {
   const [karamkoduId, setKaramkoduId] = useState("");
@@ -26,6 +28,10 @@ const Login = (props) => {
 
     login(karamkoduId, password)
       .then((resp) => {
+        props.updateLoginStatus(true);
+        props.updateToken(resp.token);
+        props.updateUserId(karamkoduId);
+        props.navigateToProfile();
       })
       .catch((err) => {
         if (err.message === "Network Error") {
@@ -49,7 +55,7 @@ const Login = (props) => {
 
   return (
     <div class="container">
-      <form onSubmit={(event) => /*submit(event)*/props.navigateToProfile()}>
+      <form onSubmit={(event) => submit(event)}>
         <div class="row">
           <div class="col-md-4"></div>
           <div class="col-md-4">
@@ -85,5 +91,12 @@ const Login = (props) => {
     </div>
   );
 };
+function mapDispatchToProps(dispatch) {
+  return {
+    updateUserId: (userId) => dispatch(updateUserId(userId)),
+    updateLoginStatus: (status) => dispatch(updateLoginStatus(status)),
+    updateToken: (token) => dispatch(updateToken(token)),
+  };
+}
 
-export default Login;
+export default connect(null, mapDispatchToProps)(Login);

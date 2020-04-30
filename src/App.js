@@ -4,6 +4,7 @@ import Profile from "./pages/Profile/Profile";
 import Team from "./pages/Team/Team";
 import PlantRegistration from "./pages/PlantRegistration/PlantRegistration";
 import Report from "./pages/Report/Report";
+import TeamRequest from "./pages/TeamRequest/TeamRequest";
 import Approval from "./pages/Approval/Approval";
 import Error from "./pages/Error/Error";
 import Authentication from "./pages/Authentication/Authentication";
@@ -25,10 +26,11 @@ class App extends React.Component {
           <div>
             <Switch>
               <AuthRoute path="/login" component={Authentication} />
-              <PrivateRoute exact path="/profile" component={Profile} />
+              <PrivateRoute path="/profile" component={Profile} />
+              <PlantRoute path="/plant" component={PlantRegistration} />
               <TeamRoute exact path="/team/:name" component={Team} />
-              <PlantRoute exact path="/plant" component={PlantRegistration} />
               <TeamRoute exact path="/report/:name" component={Report} />
+              <TeamRoute exact path="/request/:name" component={TeamRequest} />
               <PrivateRoute
                 exact
                 path="/waiting-for-approval"

@@ -2,12 +2,13 @@ import { UPDATE_TOKEN, UPDATE_IS_LOGGED_IN } from "../actions/action-types";
 
 const initialState = {
   token: "",
-  isLoggedIn: true,
+  isLoggedIn: false,
   plantRegister: false,
-  teamFlag: true,
-  environmentFlag: true,
+  teamFlag: false,
+  environmentFlag: false,
   educationFlag: false,
-  rehabilitationFlag: false
+  rehabilitationFlag: false,
+  userId: -1
 };
 
 function rootReducer(state = initialState, action) {
