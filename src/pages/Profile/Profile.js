@@ -19,8 +19,6 @@ class Profile extends Component {
     };
   }
 
-  componentWillMount() {}
-
   renderTitle() {
     return (
       <center>
@@ -156,8 +154,6 @@ class Profile extends Component {
     }
 
     let size = 12 / dataObject.length;
-
-    console.log(dataObject);
 
     return dataObject.map((item, id) => (
       <div key={id} className={"col-md-" + size}>
