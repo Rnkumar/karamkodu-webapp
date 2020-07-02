@@ -1,13 +1,11 @@
 import { LOGIN_URL } from "./config";
-import axios from 'axios';
-import './axiosConfig';
-
+import axios from "axios";
 
 const login = async (karamkoduId, password) => {
-  const data = new FormData();
-  data.append('user_id',karamkoduId);
-  data.append('password', password);
-  const response = await axios.post(LOGIN_URL, data);
+  const response = await axios.post(LOGIN_URL, {
+    karamkodu_id: karamkoduId,
+    password: password
+  });
   return response;
 };
 

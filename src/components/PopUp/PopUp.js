@@ -36,8 +36,7 @@ export default class PopUp extends Component {
 
   joinTeam(teamName, leaderId, centerName) {
     leaderId = leaderId.replace("KK", "");
-    const userId = localStorage.getItem("user_id");
-    joinTeamRequest(teamName, leaderId, centerName, userId)
+    joinTeamRequest(teamName, leaderId, centerName, this.props.karamkoduId)
       .then(res => {
         if (res["message"] === "success") {
           alert("success");

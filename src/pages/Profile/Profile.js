@@ -1,22 +1,49 @@
 import React, { Component } from "react";
 import "./Profile.css";
+import { connect } from "react-redux";
+
 import rehabilitationImage from "./../../images/profile/1.png";
 import environmentImage from "./../../images/profile/2.png";
 import educationImage from "./../../images/profile/3.png";
 import PopUp from "./../../components/PopUp/PopUp";
 import popUpData from "./data";
+import { getProfile } from "./../../backend/user";
+import { getTeamMemberStatus } from "./../../backend/team";
+import { getPlant } from "./../../backend/plant";
+import { updatePlantStatus, updateEnvironmentFlag } from "../../actions";
 
 class Profile extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      environment: true,
-      education: true,
-      rehabilitation: true,
+      name: "",
+      environment: false,
+      education: false,
+      rehabilitation: false,
       environmentRegisterFlag: false,
       educationRegisterFlag: false,
-      rehabilitationRegisterFlag: false,
+      rehabilitationRegisterFlag: false
     };
+    this.parseResponse = this.parseResponse.bind(this);
+  }
+
+  componentDidMount() {
+    getProfile(this.props.karamkoduId)
+      .then(resp => {
+        const response = this.parseResponse(resp.data);
+        this.setState({ ...response });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+
+  parseResponse(data) {
+    let { environment, education, rehabilitation, name } = data;
+    environment = environment === 1 ? true : false;
+    education = education === 1 ? true : false;
+    rehabilitation = rehabilitation === 1 ? true : false;
+    return { environment, education, rehabilitation, name };
   }
 
   renderTitle() {
@@ -25,7 +52,7 @@ class Profile extends Component {
         <h3 className="topic">Profile</h3>
         <br />
         <h5>
-          Hi, Welcome back <span>Bala</span> <span>Kumaran</span>
+          Hi, Welcome back <span>{this.state.name}</span>
         </h5>
         <br />
         <br />
@@ -55,38 +82,69 @@ class Profile extends Component {
     );
   }
 
-  validateStatus(name) {
+  async validateStatus(name) {
     name = name.toLowerCase();
-    let status = "APPROVED";
+    if (this.state[name + "RegisterFlag"]) return;
+    let status = await this.validateFromServer(name);
     switch (status) {
       case "PENDING":
         this.props.history.push("/waiting-for-approval");
         break;
       case "APPROVED":
         if (name === "environment") {
-          let plantFlag = "PRESENT";
+          let plantFlag = await this.validatePlant();
           if (plantFlag === "ABSENT") {
+            this.props.updatePlantStatus(true);
             this.props.history.push("/plant");
+          } else if (plantFlag === "PRESENT") {
+            this.props.updateEnvironmentFlag(true);
+            this.props.history.push("/team/" + name);
           } else {
-            this.props.history.push("/team/"+name);
+            alert("TRY AGAIN");
           }
         } else {
-          this.props.history.push("/team");
+          this.props.history.push("/team/" + name);
         }
         break;
-      case "NOT_EXISTING":
+      case "REJECTED":
+        alert("Sorry your access is rejected!");
       default:
         let key = name + "RegisterFlag";
         this.setState({
-          [key]: true,
+          [key]: true
         });
         break;
     }
   }
 
+  validateFromServer = async teamName => {
+    const response = await getTeamMemberStatus(
+      this.props.karamkoduId,
+      teamName
+    );
+    return response.data.status;
+  };
+
+  validatePlant = async () => {
+    try {
+      const response = await getPlant(this.props.karamkoduId);
+      if (!response) return "NOT";
+      return "PRESENT";
+    } catch (err) {
+      if ("response" in err) {
+        if ("status" in err.response) {
+          if (err.response.status === 404) {
+            return "ABSENT";
+          }
+        }
+      }
+      return "NOT";
+    }
+  };
+
   renderCard(name, id, image, registerFlag) {
     return (
-      <button type="button" onClick={(event) => this.validateStatus(name)}>
+      <button type="button" onClick={event => this.validateStatus(name)}>
         <br />
         <div
           class="card"
@@ -131,7 +189,7 @@ class Profile extends Component {
         "Education",
         "edu",
         educationImage,
-        this.state.educationRegisterFlag,
+        this.state.educationRegisterFlag
       ]);
     }
 
@@ -140,7 +198,7 @@ class Profile extends Component {
         "Environment",
         "env",
         environmentImage,
-        this.state.environmentRegisterFlag,
+        this.state.environmentRegisterFlag
       ]);
     }
 
@@ -149,7 +207,7 @@ class Profile extends Component {
         "Rehabilitation",
         "reh",
         rehabilitationImage,
-        this.state.rehabilitationRegisterFlag,
+        this.state.rehabilitationRegisterFlag
       ]);
     }
 
@@ -198,6 +256,7 @@ class Profile extends Component {
           <PopUp
             key={id}
             id={item.id}
+            karamkoduId={this.props.karamkoduId}
             teamName={item.teamName}
             profileKey={item.profileKey}
             footerId={item.footerId}
@@ -212,5 +271,11 @@ class Profile extends Component {
     );
   }
 }
+function mapDispatchToProps(dispatch) {
+  return {
+    updatePlantStatus: status => dispatch(updatePlantStatus(status)),
+    updateEnvironmentFlag: flag => dispatch(updateEnvironmentFlag(flag))
+  };
+}
 
-export default Profile;
+export default connect(null, mapDispatchToProps)(Profile);

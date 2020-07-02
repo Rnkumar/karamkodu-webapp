@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import "./Login.css";
 import { login } from "./../../backend/auth";
-import { updateToken, updateLoginStatus, updateUserId } from "../../actions";
+import { updateLoginStatus, updateKaramkoduId } from "../../actions";
 import { connect } from "react-redux";
 
-const Login = (props) => {
+const Login = props => {
   const [karamkoduId, setKaramkoduId] = useState("");
   const [password, setPassword] = useState("");
 
@@ -22,18 +22,23 @@ const Login = (props) => {
     return true;
   };
 
-  const submit = (event) => {
+  const submit = event => {
     event.preventDefault();
     if (!validator(karamkoduId, password)) return;
 
     login(karamkoduId, password)
-      .then((resp) => {
+      .then(resp => {
         props.updateLoginStatus(true);
-        props.updateToken(resp.token);
-        props.updateUserId(karamkoduId);
+        props.updateKaramkoduId(karamkoduId);
         props.navigateToProfile();
+        const token = window.btoa("kk" + resp.data.access_token);
+        localStorage.setItem("token", token);
+        localStorage.setItem(
+          "karamkodu_data",
+          window.btoa("KKID:" + karamkoduId)
+        );
       })
-      .catch((err) => {
+      .catch(err => {
         if (err.message === "Network Error") {
           alert("Make sure you have connected to a network");
           return;
@@ -55,7 +60,7 @@ const Login = (props) => {
 
   return (
     <div class="container">
-      <form onSubmit={(event) => submit(event)}>
+      <form onSubmit={event => submit(event)}>
         <div class="row">
           <div class="col-md-4"></div>
           <div class="col-md-4">
@@ -64,7 +69,7 @@ const Login = (props) => {
                 class="form-control"
                 type="text"
                 placeholder="Karamkodu Id"
-                onChange={(event) => setKaramkoduId(event.target.value)}
+                onChange={event => setKaramkoduId(event.target.value)}
               />
             </div>
           </div>
@@ -75,7 +80,7 @@ const Login = (props) => {
           <div class="col-md-4">
             <div class="form-group">
               <input
-                onChange={(event) => setPassword(event.target.value)}
+                onChange={event => setPassword(event.target.value)}
                 class="form-control"
                 type="password"
                 placeholder="Password"
@@ -93,9 +98,8 @@ const Login = (props) => {
 };
 function mapDispatchToProps(dispatch) {
   return {
-    updateUserId: (userId) => dispatch(updateUserId(userId)),
-    updateLoginStatus: (status) => dispatch(updateLoginStatus(status)),
-    updateToken: (token) => dispatch(updateToken(token)),
+    updateKaramkoduId: karamkoduId => dispatch(updateKaramkoduId(karamkoduId)),
+    updateLoginStatus: status => dispatch(updateLoginStatus(status))
   };
 }
 

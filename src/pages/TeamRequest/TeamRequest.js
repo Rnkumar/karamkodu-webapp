@@ -15,9 +15,7 @@ class TeamRequest extends Component {
     );
   }
 
-  submitResponse(){
-      
-  }
+  submitResponse() {}
 
   renderContactNumber(contactNumber) {
     return (
@@ -35,7 +33,11 @@ class TeamRequest extends Component {
   renderNameAndId(userName, memberId) {
     return (
       <span style={{ float: "left" }}>
-        <img src={profileImage} style={{ width: 40, height: 40 }} alt="profile"/>
+        <img
+          src={profileImage}
+          style={{ width: 40, height: 40 }}
+          alt="profile"
+        />
         <span>{userName}</span>
         <span class="badge">({"KK" + memberId})</span>
       </span>
@@ -96,7 +98,7 @@ class TeamRequest extends Component {
 }
 
 function mapStateToProps(state) {
-  return { userId: state.userId };
+  return { karamkoduId: state.karamkoduId };
 }
 
 export default connect(mapStateToProps)(TeamRequest);
