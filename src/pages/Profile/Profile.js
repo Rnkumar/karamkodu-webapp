@@ -36,6 +36,7 @@ class Profile extends Component {
   }
 
   componentDidMount() {
+    document.title = "Profile";
     this.setState({ loading: true });
     const karamkoduId =
       "karamkodu_data" in localStorage
@@ -59,7 +60,7 @@ class Profile extends Component {
         this.setState({ ...response });
       })
       .catch(err => {
-        console.log(err);
+        alert("Failed! Try Again");
       })
       .finally(() => {
         this.setState({ loading: false });
@@ -155,21 +156,40 @@ class Profile extends Component {
         break;
       case "REJECTED":
         alert("Sorry your access is rejected!");
-      default:
-        let key = name + "RegisterFlag";
+        let key1 = name + "RegisterFlag";
         this.setState({
-          [key]: true
+          [key1]: true
         });
+        break;
+      case "NOT_EXISTING":
+        alert("Sorry your access is rejected!");
+        let key2 = name + "RegisterFlag";
+        this.setState({
+          [key2]: true
+        });
+        break;
+      default:
         break;
     }
   }
 
   validateFromServer = async teamName => {
-    const response = await getTeamMemberStatus(
-      this.props.karamkoduId,
-      teamName
-    );
-    return response.data.status;
+    try {
+      const response = await getTeamMemberStatus(
+        this.props.karamkoduId,
+        teamName
+      );
+      return response.data.status;
+    } catch (err) {
+      if ("response" in err) {
+        if ("status" in err.response) {
+          if (err.response.status === 404) {
+            return "NOT_EXISTING";
+          }
+        }
+      }
+      return "NOT";
+    }
   };
 
   validatePlant = async () => {

@@ -27,7 +27,7 @@ const Header = props => {
           <span style={{ color: "white" }}>Home</span>
         </a>
         &nbsp;&nbsp;&nbsp;&nbsp;
-        <Link to="/profile">
+        <Link to="/">
           <span style={{ color: "white" }}>Profile</span>
         </Link>
       </div>

@@ -3,6 +3,9 @@ import logoblack from "./../../images/logo_black.png";
 import "./Approval.css";
 
 const Approval = () => {
+  React.useEffect(() => {
+    document.title = "Approval";
+  }, []);
   return (
     <center>
       <img src={logoblack} alt="karamkodu logo" />

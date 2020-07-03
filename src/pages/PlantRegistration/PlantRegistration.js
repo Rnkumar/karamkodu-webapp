@@ -21,6 +21,10 @@ class PlantRegistration extends Component {
     this.getCurrentLocation = this.getCurrentLocation.bind(this);
   }
 
+  componentDidMount() {
+    document.title = "Plant";
+  }
+
   submitReport(event) {
     event.preventDefault();
     if (!this.validate(this.state)) {
@@ -30,7 +34,6 @@ class PlantRegistration extends Component {
     registerPlant(this.props.karamkoduId, this.state)
       .then(resp => {
         updatePlantStatus(false);
-        console.log(resp);
         this.props.updateEnvironmentFlag(true);
         this.props.history.push("/team/environment");
       })
@@ -42,7 +45,6 @@ class PlantRegistration extends Component {
           }
         }
         alert("Try Again");
-        console.log(err);
       });
   }
 

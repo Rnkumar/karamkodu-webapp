@@ -17,7 +17,7 @@ const PlantRoute = props => {
             <Component {...props} />
           </>
         ) : (
-          <Redirect to="/profile" />
+          <Redirect to="/" />
         )
       }
     />

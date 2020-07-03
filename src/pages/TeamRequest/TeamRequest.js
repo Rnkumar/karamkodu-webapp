@@ -22,6 +22,7 @@ class TeamRequest extends Component {
   }
 
   componentDidMount() {
+    document.title = "Team Requests";
     const teamName = this.props.match.params.name;
     const karamkoduId = this.props.karamkoduId;
     getTeamRequests(karamkoduId, teamName)
@@ -29,14 +30,13 @@ class TeamRequest extends Component {
         this.setState({ teamRequests: resp.data });
       })
       .catch(err => {
-        console.log(err);
+        alert("Failed! Try Again");
       });
   }
 
   performAction(memberId, action) {
     const teamName = this.props.match.params.name.toUpperCase();
     const leaderId = this.props.karamkoduId;
-    console.log(memberId);
     updateTeamRequest("KK" + memberId, leaderId, teamName, action)
       .then(resp => {
         if (resp.status === 201) {

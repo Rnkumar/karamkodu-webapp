@@ -13,17 +13,16 @@ const TeamRoute = props => {
         const validTeamNames = ["environment", "education", "rehabilitation"];
         const teamName = properties.match.params.name.toLowerCase();
         if (!validTeamNames.includes(teamName)) {
-          return <Redirect to="/profile" />;
+          return <Redirect to="/" />;
         }
         const teamNameFlag = props[teamName + "Flag"];
-        console.log();
         return isLoggedIn && teamNameFlag ? (
           <>
             <Header />
             <Component {...properties} />
           </>
         ) : (
-          <Redirect to="/profile" />
+          <Redirect to="/" />
         );
       }}
     />

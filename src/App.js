@@ -22,11 +22,11 @@ class App extends React.Component {
     return (
       <Provider store={store}>
         <div className="App">
-          <BrowserRouter basename="/react">
+          <BrowserRouter basename="/profile">
             <Switch>
               <PrivateRoute exact path="/" component={Profile} />
               <AuthRoute exact path="/login" component={Authentication} />
-              <PrivateRoute exact path="/profile" component={Profile} />
+              {/* <PrivateRoute exact path="/profile" component={Profile} /> */}
               <PlantRoute exact path="/plant" component={PlantRegistration} />
               <TeamRoute exact path="/team/:name" component={Team} />
               <TeamRoute exact path="/report/:name" component={Report} />

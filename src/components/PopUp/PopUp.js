@@ -21,7 +21,6 @@ export default class PopUp extends Component {
   verifyUserId(leaderId, teamName) {
     verifyUserId(leaderId, teamName)
       .then(resp => {
-        console.log(resp);
         const response = resp.data;
         if (response["message"] === "success") {
           this.setState({
@@ -66,8 +65,6 @@ export default class PopUp extends Component {
         alert(response.data["message"]);
       }
     } catch (err) {
-      console.log(err);
-
       if (err.response && err.response.status === 404) {
         alert("Volunteer not found");
       } else {

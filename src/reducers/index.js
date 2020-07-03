@@ -72,11 +72,6 @@ function rootReducer(state = initialState, action) {
         rehabilitationFlag: action.payload
       });
     case RESET:
-      console.log(
-        Object.assign({}, state, {
-          karamkoduId: action.payload
-        })
-      );
       return resetState;
     default:
       return state;

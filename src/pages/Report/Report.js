@@ -6,6 +6,9 @@ import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 
 class Report extends Component {
+  componentDidMount() {
+    document.title = "Reports";
+  }
   goBack = () => this.props.history.goBack();
   render() {
     const teamName = this.props.match.params.name;
@@ -25,9 +28,9 @@ class Report extends Component {
           />
         );
       case "rehabilitation":
-        return <Redirect to="/profile" />;
+        return <Redirect to="/" />;
       default:
-        return <Redirect to="/profile" />;
+        return <Redirect to="/" />;
     }
   }
 }

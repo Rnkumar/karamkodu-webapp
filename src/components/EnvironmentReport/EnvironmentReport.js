@@ -31,7 +31,7 @@ class EnvironmentReport extends Component {
           alert("Failed! Try Again");
         }
       })
-      .catch(err => console.log(err));
+      .catch(err => alert("Failed! Try Again"));
   }
 
   renderRadioGroup(label, key) {

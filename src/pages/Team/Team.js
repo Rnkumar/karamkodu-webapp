@@ -16,6 +16,7 @@ class Team extends Component {
   }
 
   componentDidMount() {
+    document.title = "Team";
     this.setState({ loading: true });
     const teamName = this.props.match.params.name;
     const karamkoduId = this.props.karamkoduId;

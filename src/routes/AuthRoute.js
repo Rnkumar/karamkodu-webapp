@@ -8,7 +8,7 @@ const AuthRoute = props => {
     <Route
       {...rest}
       render={props =>
-        !isLoggedIn ? <Component {...props} /> : <Redirect to="/profile" />
+        !isLoggedIn ? <Component {...props} /> : <Redirect to="/" />
       }
     />
   );
