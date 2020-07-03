@@ -3,19 +3,20 @@ import "./TeamRequest.css";
 import profileImage from "./../../images/profile/profile.png";
 import phoneImage from "./../../images/profile/phone.png";
 import { connect } from "react-redux";
-import { getTeamRequests } from "./../../backend/team";
+import { getTeamRequests, updateTeamRequest } from "./../../backend/team";
 
 class TeamRequest extends Component {
   constructor(props) {
     super(props);
     this.state = { teamRequests: [], isLoading: false };
+    this.performAction = this.performAction.bind(this);
   }
   renderMember(id, userName, contactNumber, memberId) {
     return (
       <li class="list-group-item" key={id}>
         {this.renderNameAndId(userName, memberId)}
         {this.renderContactNumber(contactNumber)}
-        {this.renderOptions()}
+        {this.renderOptions(memberId)}
       </li>
     );
   }
@@ -32,7 +33,27 @@ class TeamRequest extends Component {
       });
   }
 
-  submitResponse() {}
+  performAction(memberId, action) {
+    const teamName = this.props.match.params.name.toUpperCase();
+    const leaderId = this.props.karamkoduId;
+    console.log(memberId);
+    updateTeamRequest("KK" + memberId, leaderId, teamName, action)
+      .then(resp => {
+        if (resp.status === 201) {
+          alert("success");
+          this.props.history.goBack();
+        } else {
+          alert("Failed! Try Again");
+        }
+      })
+      .catch(err => {
+        if (err.response.status === 404) {
+          alert(err.response.data.message);
+        } else {
+          alert("Try Again!");
+        }
+      });
+  }
 
   renderContactNumber(contactNumber) {
     return (
@@ -61,18 +82,20 @@ class TeamRequest extends Component {
     );
   }
 
-  renderOptions() {
+  renderOptions(memberId) {
     return (
       <span style={{ float: "right" }}>
         <button
           style={{ marginRight: 10, marginLeft: 10 }}
           class="btn btn-dark"
+          onClick={() => this.performAction(memberId, "ACCEPT")}
         >
           Accept
         </button>
         <button
           style={{ marginRight: 10, marginLeft: 10 }}
           class="btn btn-dark"
+          onClick={() => this.performAction(memberId, "REJECT")}
         >
           Reject
         </button>
@@ -91,7 +114,8 @@ class TeamRequest extends Component {
             <div class="col-md-2"></div>
             <div class="col-md-8">
               <ul class="list-group">
-                {this.state.teamRequests.length === 0 ? (
+                {!this.state.isLoading &&
+                this.state.teamRequests.length === 0 ? (
                   <center>
                     <p>No Requests Yet!</p>
                   </center>

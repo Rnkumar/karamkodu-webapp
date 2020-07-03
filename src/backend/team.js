@@ -2,7 +2,8 @@ import axios from "axios";
 import {
   TEAM_MEMBER_STATUS,
   GET_TEAM_MEMBERS_URL,
-  GET_TEAM_REQUESTS_URL
+  GET_TEAM_REQUESTS_URL,
+  TEAM_REQUEST_UPDATE_URL
 } from "./config";
 
 const getTeamMemberStatus = async (karamkoduId, teamName) => {
@@ -35,4 +36,18 @@ const getTeamRequests = async (karamkoduId, team) => {
   );
 };
 
-export { getTeamMemberStatus, getTeamMembers, getTeamRequests };
+const updateTeamRequest = async (memberId, leaderId, teamName, action) => {
+  return axios.put(TEAM_REQUEST_UPDATE_URL, {
+    member_karamkodu_id: memberId,
+    leader_karamkodu_id: leaderId,
+    action: action,
+    team_name: teamName
+  });
+};
+
+export {
+  getTeamMemberStatus,
+  getTeamMembers,
+  getTeamRequests,
+  updateTeamRequest
+};
