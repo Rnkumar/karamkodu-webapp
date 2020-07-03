@@ -1,26 +1,46 @@
-import { PROFILE_URL, VERIFY_USER_URL, JOIN_TEAM_REQUEST_URL } from "./config";
+import {
+  PROFILE_URL,
+  VERIFY_USER_URL,
+  JOIN_TEAM_AS_MEMBER_REQUEST_URL,
+  JOIN_TEAM_AS_LEADER_REQUEST_URL
+} from "./config";
 import axios from "axios";
 
-const verifyUserId = async user_id => {
-  const res = await fetch(VERIFY_USER_URL + "?user_id=" + user_id);
-  return res.json();
+const verifyUserId = async (karamkoduId, teamName) => {
+  return axios.get(
+    VERIFY_USER_URL + "?karamkodu_id=" + karamkoduId + "&team_name=" + teamName
+  );
 };
 
-const joinTeamRequest = async (teamName, leaderId, centerName, karamkoduId) => {
-  let formData = new FormData();
-  formData.append("team", teamName);
-  formData.append("lead_id", leaderId);
-  formData.append("location", centerName);
-  formData.append("member_id", karamkoduId);
-  const res = await fetch(JOIN_TEAM_REQUEST_URL, {
-    method: "POST",
-    body: formData
+const joinTeamAsMemberRequest = async (teamName, leaderId, karamkoduId) => {
+  return await axios.post(JOIN_TEAM_AS_MEMBER_REQUEST_URL, {
+    team_name: teamName,
+    leader_karamkodu_id: leaderId,
+    member_karamkodu_id: karamkoduId
   });
-  return res.json();
+};
+
+const joinTeamAsLeaderRequest = async (
+  teamName,
+  leaderId,
+  centerName,
+  karamkoduId
+) => {
+  return await axios.post(JOIN_TEAM_AS_LEADER_REQUEST_URL, {
+    team_name: teamName,
+    leader_karamkodu_id: leaderId,
+    member_karamkodu_id: karamkoduId,
+    location: centerName
+  });
 };
 
 const getProfile = async karamkoduId => {
   return await axios.get(PROFILE_URL + "?karamkodu_id=" + karamkoduId);
 };
 
-export { getProfile, verifyUserId, joinTeamRequest };
+export {
+  getProfile,
+  verifyUserId,
+  joinTeamAsMemberRequest,
+  joinTeamAsLeaderRequest
+};

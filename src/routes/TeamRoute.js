@@ -1,11 +1,11 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
+import Header from "./../components/Header/Header";
 
 const TeamRoute = props => {
   const { component: Component, ...rest } = props;
   const isLoggedIn = props.isLoggedIn;
-  const teamFlag = props.teamFlag;
   return (
     <Route
       {...rest}
@@ -18,7 +18,10 @@ const TeamRoute = props => {
         const teamNameFlag = props[teamName + "Flag"];
         console.log();
         return isLoggedIn && teamNameFlag ? (
-          <Component {...properties} />
+          <>
+            <Header />
+            <Component {...properties} />
+          </>
         ) : (
           <Redirect to="/profile" />
         );

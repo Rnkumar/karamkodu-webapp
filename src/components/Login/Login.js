@@ -7,6 +7,7 @@ import { connect } from "react-redux";
 const Login = props => {
   const [karamkoduId, setKaramkoduId] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const validator = (karamkoduId, password) => {
     if (karamkoduId === "") {
@@ -25,7 +26,7 @@ const Login = props => {
   const submit = event => {
     event.preventDefault();
     if (!validator(karamkoduId, password)) return;
-
+    setLoading(true);
     login(karamkoduId, password)
       .then(resp => {
         const token = window.btoa("kk" + resp.data.access_token);
@@ -55,6 +56,9 @@ const Login = props => {
             alert("Server Error! Contact Admin");
             break;
         }
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
@@ -90,7 +94,13 @@ const Login = props => {
           <div class="col-md-4"></div>
         </div>
         <center>
-          <input type="submit" value="GO" className="button" />
+          {loading ? (
+            <div class="spinner-border" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+          ) : (
+            <input type="submit" value="GO" className="button" />
+          )}
         </center>
       </form>
     </div>

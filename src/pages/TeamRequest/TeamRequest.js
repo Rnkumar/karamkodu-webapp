@@ -3,16 +3,33 @@ import "./TeamRequest.css";
 import profileImage from "./../../images/profile/profile.png";
 import phoneImage from "./../../images/profile/phone.png";
 import { connect } from "react-redux";
+import { getTeamRequests } from "./../../backend/team";
 
 class TeamRequest extends Component {
-  renderMember(userName, contactNumber, memberId) {
+  constructor(props) {
+    super(props);
+    this.state = { teamRequests: [], isLoading: false };
+  }
+  renderMember(id, userName, contactNumber, memberId) {
     return (
-      <li class="list-group-item">
+      <li class="list-group-item" key={id}>
         {this.renderNameAndId(userName, memberId)}
         {this.renderContactNumber(contactNumber)}
         {this.renderOptions()}
       </li>
     );
+  }
+
+  componentDidMount() {
+    const teamName = this.props.match.params.name;
+    const karamkoduId = this.props.karamkoduId;
+    getTeamRequests(karamkoduId, teamName)
+      .then(resp => {
+        this.setState({ teamRequests: resp.data });
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }
 
   submitResponse() {}
@@ -64,7 +81,6 @@ class TeamRequest extends Component {
   }
 
   render() {
-    const teamName = this.props.match.params.name;
     return (
       <div class="page-wrapper">
         <div class="container">
@@ -75,9 +91,20 @@ class TeamRequest extends Component {
             <div class="col-md-2"></div>
             <div class="col-md-8">
               <ul class="list-group">
-                {this.renderMember("A", 239849234, 2)}
-                {this.renderMember("A", 239849234, 2)}
-                {this.renderMember("A", 239849234, 2)}
+                {this.state.teamRequests.length === 0 ? (
+                  <center>
+                    <p>No Requests Yet!</p>
+                  </center>
+                ) : (
+                  this.state.teamRequests.map((item, id) => {
+                    return this.renderMember(
+                      id,
+                      item.name,
+                      item.contact_number,
+                      item.member_id
+                    );
+                  })
+                )}
               </ul>
               <br />
               <center>

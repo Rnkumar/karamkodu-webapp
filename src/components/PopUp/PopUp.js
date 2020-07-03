@@ -1,6 +1,10 @@
 import React, { Component } from "react";
 import profileImage from "./../../images/profile/profile.png";
-import { verifyUserId, joinTeamRequest } from "./../../backend/user";
+import {
+  verifyUserId,
+  joinTeamAsMemberRequest,
+  joinTeamAsLeaderRequest
+} from "./../../backend/user";
 
 export default class PopUp extends Component {
   constructor(props) {
@@ -9,46 +13,67 @@ export default class PopUp extends Component {
       leaderId: "",
       centerName: "",
       isVisible: false,
-      first_name: "",
-      last_name: ""
+      name: ""
     };
+    this.buttonRef = React.createRef();
   }
 
-  verifyUserId(leaderId) {
-    leaderId = leaderId.replace("KK", "");
-    verifyUserId(leaderId)
+  verifyUserId(leaderId, teamName) {
+    verifyUserId(leaderId, teamName)
       .then(resp => {
-        if (resp["message"] === "success") {
+        console.log(resp);
+        const response = resp.data;
+        if (response["message"] === "success") {
           this.setState({
             isVisible: true,
-            first_name: resp["data"].first_name,
-            last_name: resp["data"].last_name
+            name: response["data"].name
           });
         } else {
           alert("No valid user found");
         }
       })
       .catch(err => {
-        alert("Try Again");
-        console.log(err);
+        if (err.response.status === 404) {
+          alert(err.response.data.message);
+        } else {
+          alert("Try Again");
+        }
       });
   }
 
-  joinTeam(teamName, leaderId, centerName) {
-    leaderId = leaderId.replace("KK", "");
-    joinTeamRequest(teamName, leaderId, centerName, this.props.karamkoduId)
-      .then(res => {
-        if (res["message"] === "success") {
-          alert("success");
-          this.props.redirectToWait();
-        } else {
-          alert(res["message"]);
-        }
-      })
-      .catch(err => {
+  async joinTeam(teamName, leaderId, centerName, isLeaderRequest) {
+    try {
+      let response = "";
+      if (isLeaderRequest) {
+        response = await joinTeamAsLeaderRequest(
+          teamName,
+          leaderId,
+          centerName,
+          this.props.karamkoduId
+        );
+      } else {
+        response = await joinTeamAsMemberRequest(
+          teamName,
+          leaderId,
+          this.props.karamkoduId
+        );
+      }
+      if (response.status === 201) {
+        alert("success");
+        this.buttonRef.click();
+        this.props.redirectToWait();
+      } else {
+        alert(response.data["message"]);
+      }
+    } catch (err) {
+      console.log(err);
+
+      if (err.response && err.response.status === 404) {
+        alert("Volunteer not found");
+      } else {
         alert("Try Again Later");
-        console.log(err);
-      });
+      }
+    }
   }
 
   renderHeader(title) {
@@ -63,6 +88,7 @@ export default class PopUp extends Component {
     return (
       <div className="modal-footer">
         <button
+          ref={input => (this.buttonRef = input)}
           type="button"
           id={id}
           className="btn btn-dark"
@@ -108,7 +134,7 @@ export default class PopUp extends Component {
             )}
             <input
               type="button"
-              onClick={() => this.verifyUserId(this.state.leaderId)}
+              onClick={() => this.verifyUserId(this.state.leaderId, teamName)}
               className="btn btn-dark"
               value="Verify"
             />
@@ -121,8 +147,7 @@ export default class PopUp extends Component {
                   alt="profile"
                   style={{ width: "150px" }}
                 />
-                <h5>{this.state.first_name}</h5>
-                <h5>{this.state.last_name}</h5>
+                <h5>{this.state.name}</h5>
                 <input
                   type="button"
                   className="btn btn-dark"
@@ -131,7 +156,8 @@ export default class PopUp extends Component {
                     this.joinTeam(
                       teamName,
                       this.state.leaderId,
-                      this.state.centerName
+                      this.state.centerName,
+                      isLeaderRequest
                     )
                   }
                 />
@@ -153,7 +179,7 @@ export default class PopUp extends Component {
       isLeaderRequest
     } = this.props;
     return (
-      <div id={id} className="modal fade" role="dialog">
+      <div id={id} className="modal" role="dialog">
         <div className="modal-dialog">
           <div className="modal-content" style={{ color: "black" }}>
             {this.renderHeader(

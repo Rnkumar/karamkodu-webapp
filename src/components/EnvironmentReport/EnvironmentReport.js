@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import "./EnvironmentReport.css";
 import { submitEnvReport } from "./../../backend/report";
-import { connect } from "react-redux";
 class EnvironmentReport extends Component {
   constructor(props) {
     super(props);
-    this.state = { treeGuard: "", issue: "", updatedHeight: "" };
+    this.initialState = { treeGuard: "", issue: "", updatedHeight: "" };
+    this.state = this.initialState;
   }
   submitReport(event) {
     event.preventDefault();
@@ -24,7 +24,12 @@ class EnvironmentReport extends Component {
     }
     submitEnvReport(this.props.karamkoduId, treeGuard, issue, updatedHeight)
       .then(resp => {
-        console.log(resp);
+        if (resp.status === 201) {
+          alert("success");
+          this.props.goBack();
+        } else {
+          alert("Failed! Try Again");
+        }
       })
       .catch(err => console.log(err));
   }
@@ -108,8 +113,4 @@ class EnvironmentReport extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  return { karamkoduId: state.karamkoduId };
-};
-
-export default connect(mapStateToProps)(EnvironmentReport);
+export default EnvironmentReport;

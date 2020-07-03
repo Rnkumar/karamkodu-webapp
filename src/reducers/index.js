@@ -3,7 +3,9 @@ import {
   UPDATE_PLANT_STATUS,
   UPDATE_ENVIRONMENT_FLAG,
   RESET,
-  UPDATE_KARAMKODU_ID
+  UPDATE_KARAMKODU_ID,
+  UPDATE_EDUCATION_FLAG,
+  UPDATE_REHABILITATION_FLAG
 } from "../actions/action-types";
 
 const token =
@@ -60,6 +62,14 @@ function rootReducer(state = initialState, action) {
     case UPDATE_ENVIRONMENT_FLAG:
       return Object.assign({}, state, {
         environmentFlag: action.payload
+      });
+    case UPDATE_EDUCATION_FLAG:
+      return Object.assign({}, state, {
+        educationFlag: action.payload
+      });
+    case UPDATE_REHABILITATION_FLAG:
+      return Object.assign({}, state, {
+        rehabilitationFlag: action.payload
       });
     case RESET:
       console.log(

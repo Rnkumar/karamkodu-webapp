@@ -10,7 +10,13 @@ import popUpData from "./data";
 import { getProfile } from "./../../backend/user";
 import { getTeamMemberStatus } from "./../../backend/team";
 import { getPlant } from "./../../backend/plant";
-import { updatePlantStatus, updateEnvironmentFlag, reset } from "../../actions";
+import {
+  updatePlantStatus,
+  updateEnvironmentFlag,
+  updateRehabilitationFlag,
+  updateEducationFlag,
+  reset
+} from "../../actions";
 
 class Profile extends Component {
   constructor(props) {
@@ -22,13 +28,15 @@ class Profile extends Component {
       rehabilitation: false,
       environmentRegisterFlag: false,
       educationRegisterFlag: false,
-      rehabilitationRegisterFlag: false
+      rehabilitationRegisterFlag: false,
+      loading: false
     };
     this.parseResponse = this.parseResponse.bind(this);
     this.logout = this.logout.bind(this);
   }
 
   componentDidMount() {
+    this.setState({ loading: true });
     const karamkoduId =
       "karamkodu_data" in localStorage
         ? (function() {
@@ -52,6 +60,9 @@ class Profile extends Component {
       })
       .catch(err => {
         console.log(err);
+      })
+      .finally(() => {
+        this.setState({ loading: false });
       });
   }
 
@@ -65,26 +76,22 @@ class Profile extends Component {
 
   renderTitle() {
     return (
-      <div>
-        <center>
-          <div>
-            <h3 className="topic">Profile</h3>
-            <br />
-            <h5>
-              Hi, Welcome back <span>{this.state.name}</span>
-            </h5>
-            <br />
-            <br />
-          </div>
-        </center>
-        <button
-          type="button"
-          style={{ float: "right" }}
-          onClick={() => this.logout()}
-        >
-          Log Out
-        </button>
-      </div>
+      <center>
+        <div>
+          <h3 className="topic">Profile</h3>
+          {this.state.loading && (
+            <div class="spinner-border" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+          )}
+          <br />
+          <h5>
+            Hi, Welcome back <span>{this.state.name}</span>
+          </h5>
+          <br />
+          <br />
+        </div>
+      </center>
     );
   }
 
@@ -99,8 +106,6 @@ class Profile extends Component {
     localStorage.clear();
     this.props.history.push("/login");
   };
-
-  check(name) {}
 
   renderButton(dataTargetId, name, text) {
     return (
@@ -119,14 +124,18 @@ class Profile extends Component {
   async validateStatus(name) {
     name = name.toLowerCase();
     if (this.state[name + "RegisterFlag"]) return;
+    this.setState({ loading: true });
     let status = await this.validateFromServer(name);
+    this.setState({ loading: false });
     switch (status) {
       case "PENDING":
         this.props.history.push("/waiting-for-approval");
         break;
       case "APPROVED":
         if (name === "environment") {
+          this.setState({ loading: true });
           let plantFlag = await this.validatePlant();
+          this.setState({ loading: false });
           if (plantFlag === "ABSENT") {
             this.props.updatePlantStatus(true);
             this.props.history.push("/plant");
@@ -136,7 +145,11 @@ class Profile extends Component {
           } else {
             alert("TRY AGAIN");
           }
-        } else {
+        } else if (name === "education") {
+          this.props.updateEducationFlag(true);
+          this.props.history.push("/team/" + name);
+        } else if (name === "rehabilitation") {
+          this.props.updateRehabilitationFlag(true);
           this.props.history.push("/team/" + name);
         }
         break;
@@ -178,23 +191,20 @@ class Profile extends Component {
 
   renderCard(name, id, image, registerFlag) {
     return (
-      <button type="button" onClick={event => this.validateStatus(name)}>
-        <br />
-        <div
-          class="card"
-          onClick={this.check(name.toLowerCase())}
-          className="cardstyle"
-        >
+      <div
+        class="card"
+        className="cardstyle"
+        onClick={event => this.validateStatus(name)}
+      >
+        <center>
+          <img className="card-img-top" src={image} alt={name + " logo"} />
+        </center>
+        <div className="card-body">
           <center>
-            <img className="card-img-top" src={image} alt={name + " logo"} />
+            <h5 className="card-title">
+              <b>{name}</b>
+            </h5>
           </center>
-          <div className="card-body">
-            <center>
-              <h5 className="card-title">
-                <b>{name}</b>
-              </h5>
-            </center>
-          </div>
         </div>
         {registerFlag &&
           (name.toLowerCase() === "environment" ? (
@@ -211,7 +221,7 @@ class Profile extends Component {
               )}
             </>
           ))}
-      </button>
+      </div>
     );
   }
 
@@ -248,7 +258,10 @@ class Profile extends Component {
     let size = 12 / dataObject.length;
 
     return dataObject.map((item, id) => (
-      <div key={id} className={"col-md-" + size}>
+      <div
+        key={id}
+        className={"col-md-" + size + " d-flex justify-content-center"}
+      >
         {this.renderCard(item[0], item[1], item[2], item[3])}
       </div>
     ));
@@ -309,6 +322,8 @@ function mapDispatchToProps(dispatch) {
   return {
     updatePlantStatus: status => dispatch(updatePlantStatus(status)),
     updateEnvironmentFlag: flag => dispatch(updateEnvironmentFlag(flag)),
+    updateEducationFlag: flag => dispatch(updateEducationFlag(flag)),
+    updateRehabilitationFlag: flag => dispatch(updateRehabilitationFlag(flag)),
     reset: () => dispatch(reset())
   };
 }

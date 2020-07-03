@@ -1,5 +1,9 @@
 import axios from "axios";
-import { TEAM_MEMBER_STATUS, GET_TEAM_MEMBERS_URL } from "./config";
+import {
+  TEAM_MEMBER_STATUS,
+  GET_TEAM_MEMBERS_URL,
+  GET_TEAM_REQUESTS_URL
+} from "./config";
 
 const getTeamMemberStatus = async (karamkoduId, teamName) => {
   return await axios.get(
@@ -21,4 +25,14 @@ const getTeamMembers = async (karamkoduId, team) => {
   );
 };
 
-export { getTeamMemberStatus, getTeamMembers };
+const getTeamRequests = async (karamkoduId, team) => {
+  return axios.get(
+    GET_TEAM_REQUESTS_URL +
+      "?karamkodu_id=" +
+      karamkoduId +
+      "&team_name=" +
+      team.toUpperCase()
+  );
+};
+
+export { getTeamMemberStatus, getTeamMembers, getTeamRequests };

@@ -39,21 +39,29 @@ class Team extends Component {
     const team = this.state.teamMembers;
     return team.map((item, id) => (
       <li key={id} class="list-group-item">
-        <img
-          src={profileImage}
-          style={{ width: "40px", float: "left", marginRight: "10px" }}
-          alt="profile logo"
-        />
-        <span style={{ float: "left", marginTop: "5px" }}>{item.name}</span>
-        <img
-          src={phoneImage}
-          style={{ width: "32px", marginRight: "10px" }}
-          alt="phone logo"
-        />
-        <span style={{ marginTop: "5px" }}>{item.contact_number}</span>
-        <span class="badge" style={{ float: "right" }}>
-          {"KK" + item.member_id}
-        </span>
+        <div class="row">
+          <div class="col-sm-5">
+            <img
+              src={profileImage}
+              style={{ width: "40px", float: "left", marginRight: "10px" }}
+              alt="profile logo"
+            />
+            <span style={{ float: "left", marginTop: "5px" }}>{item.name}</span>
+          </div>
+          <div class="col-sm-4 d-flex justify-content-center">
+            <img
+              src={phoneImage}
+              style={{ width: "32px", height: "32px", marginRight: "10px" }}
+              alt="phone logo"
+            />
+            <span style={{ marginTop: "5px" }}>{item.contact_number}</span>
+          </div>
+          <div class="col-sm-3">
+            <span class="badge" style={{ float: "right" }}>
+              {"KK" + item.member_id}
+            </span>
+          </div>
+        </div>
       </li>
     ));
   }
@@ -71,17 +79,17 @@ class Team extends Component {
           <div class="col-md-8">
             {this.state.loading && (
               <center id="statustext">
-                <p>Loading!!</p>
+                <div class="spinner-border" role="status">
+                  <span class="sr-only">Loading...</span>
+                </div>
               </center>
             )}
-            {this.state.teamMembers.length === 0 && (
+            {!this.state.loading && this.state.teamMembers.length === 0 && (
               <center>
                 <p>No Team Members Yet!</p>
               </center>
             )}
-            <ul class="list-group" id="teamlist">
-              {this.renderTeam()}
-            </ul>
+            <ul class="list-group">{this.renderTeam()}</ul>
             <br />
             <center>
               <button
@@ -101,9 +109,6 @@ class Team extends Component {
               </button>
             </center>
             <br />
-            {/* <center>
-              <p id="lastreportdate">No reports submitted yet</p>
-            </center> */}
           </div>
           <div class="col-md-2"></div>
         </div>

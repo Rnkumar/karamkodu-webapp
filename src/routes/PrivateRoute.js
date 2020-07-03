@@ -1,7 +1,7 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
-
+import Header from "./../components/Header/Header";
 const PrivateRoute = props => {
   const { component: Component, ...rest } = props;
   const isLoggedIn = props.isLoggedIn;
@@ -9,7 +9,14 @@ const PrivateRoute = props => {
     <Route
       {...rest}
       render={childProps =>
-        isLoggedIn ? <Component {...childProps} /> : <Redirect to="/login" />
+        isLoggedIn ? (
+          <>
+            <Header />
+            <Component {...childProps} />
+          </>
+        ) : (
+          <Redirect to="/login" />
+        )
       }
     />
   );
