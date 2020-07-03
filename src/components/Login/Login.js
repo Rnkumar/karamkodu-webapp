@@ -28,15 +28,15 @@ const Login = props => {
 
     login(karamkoduId, password)
       .then(resp => {
-        props.updateLoginStatus(true);
-        props.updateKaramkoduId(karamkoduId);
-        props.navigateToProfile();
         const token = window.btoa("kk" + resp.data.access_token);
         localStorage.setItem("token", token);
         localStorage.setItem(
           "karamkodu_data",
           window.btoa("KKID:" + karamkoduId)
         );
+        props.updateLoginStatus(true);
+        props.updateKaramkoduId(karamkoduId);
+        props.navigateToProfile();
       })
       .catch(err => {
         if (err.message === "Network Error") {
@@ -103,4 +103,8 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(null, mapDispatchToProps)(Login);
+function mapStateToProps(state) {
+  return {};
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

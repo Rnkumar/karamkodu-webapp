@@ -2,19 +2,37 @@ import React, { Component } from "react";
 import "./Team.css";
 import profileImage from "./../../images/profile/profile.png";
 import phoneImage from "./../../images/profile/phone.png";
+import { getTeamMembers } from "./../../backend/team";
+import { connect } from "react-redux";
 
 class Team extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      teamMembers: [
-        {
-          name: "dlsjflsdf",
-          mobile: "879843759834",
-          id: 12
-        }
-      ]
+      teamMembers: [],
+      loading: false,
+      noTeamFlag: false
     };
+  }
+
+  componentDidMount() {
+    this.setState({ loading: true });
+    const teamName = this.props.match.params.name;
+    const karamkoduId = this.props.karamkoduId;
+    getTeamMembers(karamkoduId, teamName)
+      .then(response => {
+        this.setState({ noTeamFlag: true, teamMembers: response.data });
+      })
+      .catch(err => {
+        if (err.response.status === 404) {
+          if (err.response.data.message === "team not found") {
+            this.setState({ noTeamFlag: true });
+          }
+        }
+      })
+      .finally(() => {
+        this.setState({ loading: false });
+      });
   }
 
   renderTeam() {
@@ -32,9 +50,9 @@ class Team extends Component {
           style={{ width: "32px", marginRight: "10px" }}
           alt="phone logo"
         />
-        <span style={{ marginTop: "5px" }}>{item.mobile}</span>
+        <span style={{ marginTop: "5px" }}>{item.contact_number}</span>
         <span class="badge" style={{ float: "right" }}>
-          {"KK" + item.id}
+          {"KK" + item.member_id}
         </span>
       </li>
     ));
@@ -51,9 +69,16 @@ class Team extends Component {
         <div class="row">
           <div class="col-md-2"></div>
           <div class="col-md-8">
-            <center id="statustext">
-              <p>Loading!!</p>
-            </center>
+            {this.state.loading && (
+              <center id="statustext">
+                <p>Loading!!</p>
+              </center>
+            )}
+            {this.state.teamMembers.length === 0 && (
+              <center>
+                <p>No Team Members Yet!</p>
+              </center>
+            )}
             <ul class="list-group" id="teamlist">
               {this.renderTeam()}
             </ul>
@@ -61,7 +86,7 @@ class Team extends Component {
             <center>
               <button
                 type="button"
-                onClick={()=>this.props.history.push("/request/"+teamName)}
+                onClick={() => this.props.history.push("/request/" + teamName)}
                 class="btn btn-dark"
               >
                 View Requests
@@ -69,7 +94,7 @@ class Team extends Component {
               &nbsp;&nbsp;&nbsp;
               <button
                 type="button"
-                onClick={()=>this.props.history.push("/report/"+teamName)}
+                onClick={() => this.props.history.push("/report/" + teamName)}
                 class="btn btn-dark"
               >
                 Add Report
@@ -90,4 +115,8 @@ class Team extends Component {
   }
 }
 
-export default Team;
+const mapStateToProps = state => {
+  return { karamkoduId: state.karamkoduId };
+};
+
+export default connect(mapStateToProps)(Team);

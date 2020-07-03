@@ -4,6 +4,9 @@ const PROFILE_URL = BASE_URL + "/profile";
 const TEAM_MEMBER_STATUS = BASE_URL + "/team/status";
 const GET_PLANT_URL = BASE_URL + "/plant";
 const REGISTER_PLANT_URL = BASE_URL + "/plant";
+const GET_TEAM_MEMBERS_URL = BASE_URL + "/team/members";
+const SUBMIT_ENVIRONMENT_REPORT_URL = BASE_URL + "/report/environment";
+
 const VERIFY_USER_URL = BASE_URL + "/getVerifyUserId.php";
 const JOIN_TEAM_REQUEST_URL = BASE_URL + "/postJoinTeamRequest.php";
 export {
@@ -14,5 +17,7 @@ export {
   LOGIN_URL,
   TEAM_MEMBER_STATUS,
   GET_PLANT_URL,
-  REGISTER_PLANT_URL
+  REGISTER_PLANT_URL,
+  GET_TEAM_MEMBERS_URL,
+  SUBMIT_ENVIRONMENT_REPORT_URL
 };

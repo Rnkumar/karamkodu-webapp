@@ -1,7 +1,9 @@
 import {
   UPDATE_IS_LOGGED_IN,
   UPDATE_PLANT_STATUS,
-  UPDATE_ENVIRONMENT_FLAG
+  UPDATE_ENVIRONMENT_FLAG,
+  RESET,
+  UPDATE_KARAMKODU_ID
 } from "../actions/action-types";
 
 const token =
@@ -24,7 +26,7 @@ const karamkoduId =
       })()
     : -1;
 const initialState = {
-  isLoggedIn: token && token.includes("kk"),
+  isLoggedIn: token && token.includes("kk") ? true : false,
   plantRegister: false,
   teamFlag: false,
   environmentFlag: false,
@@ -33,12 +35,24 @@ const initialState = {
   karamkoduId: karamkoduId
 };
 
+const resetState = {
+  isLoggedIn: false,
+  plantRegister: false,
+  teamFlag: false,
+  environmentFlag: false,
+  educationFlag: false,
+  rehabilitationFlag: false,
+  karamkoduId: -1
+};
+
 function rootReducer(state = initialState, action) {
   switch (action.type) {
     case UPDATE_IS_LOGGED_IN:
       return Object.assign({}, state, {
         isLoggedIn: action.payload
       });
+    case UPDATE_KARAMKODU_ID:
+      return { ...state, karamkoduId: action.payload };
     case UPDATE_PLANT_STATUS:
       return Object.assign({}, state, {
         plantRegister: action.payload
@@ -47,6 +61,13 @@ function rootReducer(state = initialState, action) {
       return Object.assign({}, state, {
         environmentFlag: action.payload
       });
+    case RESET:
+      console.log(
+        Object.assign({}, state, {
+          karamkoduId: action.payload
+        })
+      );
+      return resetState;
     default:
       return state;
   }

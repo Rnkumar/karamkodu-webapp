@@ -9,11 +9,7 @@ const PrivateRoute = props => {
     <Route
       {...rest}
       render={childProps =>
-        isLoggedIn ? (
-          <Component {...childProps} karamkoduId={props.karamkoduId} />
-        ) : (
-          <Redirect to="/login" />
-        )
+        isLoggedIn ? <Component {...childProps} /> : <Redirect to="/login" />
       }
     />
   );

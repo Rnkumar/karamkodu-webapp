@@ -10,7 +10,7 @@ import popUpData from "./data";
 import { getProfile } from "./../../backend/user";
 import { getTeamMemberStatus } from "./../../backend/team";
 import { getPlant } from "./../../backend/plant";
-import { updatePlantStatus, updateEnvironmentFlag } from "../../actions";
+import { updatePlantStatus, updateEnvironmentFlag, reset } from "../../actions";
 
 class Profile extends Component {
   constructor(props) {
@@ -25,10 +25,27 @@ class Profile extends Component {
       rehabilitationRegisterFlag: false
     };
     this.parseResponse = this.parseResponse.bind(this);
+    this.logout = this.logout.bind(this);
   }
 
   componentDidMount() {
-    getProfile(this.props.karamkoduId)
+    const karamkoduId =
+      "karamkodu_data" in localStorage
+        ? (function() {
+            let data = window.atob(localStorage.getItem("karamkodu_data"));
+            if (data) {
+              const dataSplit = data.split(":");
+              if (dataSplit.length === 2) {
+                return dataSplit[1];
+              } else {
+                return -1;
+              }
+            } else {
+              return -1;
+            }
+          })()
+        : -1;
+    getProfile(karamkoduId)
       .then(resp => {
         const response = this.parseResponse(resp.data);
         this.setState({ ...response });
@@ -48,15 +65,26 @@ class Profile extends Component {
 
   renderTitle() {
     return (
-      <center>
-        <h3 className="topic">Profile</h3>
-        <br />
-        <h5>
-          Hi, Welcome back <span>{this.state.name}</span>
-        </h5>
-        <br />
-        <br />
-      </center>
+      <div>
+        <center>
+          <div>
+            <h3 className="topic">Profile</h3>
+            <br />
+            <h5>
+              Hi, Welcome back <span>{this.state.name}</span>
+            </h5>
+            <br />
+            <br />
+          </div>
+        </center>
+        <button
+          type="button"
+          style={{ float: "right" }}
+          onClick={() => this.logout()}
+        >
+          Log Out
+        </button>
+      </div>
     );
   }
 
@@ -65,6 +93,12 @@ class Profile extends Component {
     let fields = this.state;
     return fields[name] ? styleName : "btnstyle";
   }
+
+  logout = () => {
+    this.props.reset();
+    localStorage.clear();
+    this.props.history.push("/login");
+  };
 
   check(name) {}
 
@@ -274,8 +308,11 @@ class Profile extends Component {
 function mapDispatchToProps(dispatch) {
   return {
     updatePlantStatus: status => dispatch(updatePlantStatus(status)),
-    updateEnvironmentFlag: flag => dispatch(updateEnvironmentFlag(flag))
+    updateEnvironmentFlag: flag => dispatch(updateEnvironmentFlag(flag)),
+    reset: () => dispatch(reset())
   };
 }
-
-export default connect(null, mapDispatchToProps)(Profile);
+function mapStateToProps(state) {
+  return { karamkoduId: state.karamkoduId };
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Profile);

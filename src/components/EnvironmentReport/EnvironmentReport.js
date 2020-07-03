@@ -1,14 +1,32 @@
 import React, { Component } from "react";
 import "./EnvironmentReport.css";
-
-export default class EnvironmentReport extends Component {
+import { submitEnvReport } from "./../../backend/report";
+import { connect } from "react-redux";
+class EnvironmentReport extends Component {
   constructor(props) {
     super(props);
     this.state = { treeGuard: "", issue: "", updatedHeight: "" };
   }
   submitReport(event) {
-      event.preventDefault();
-      console.log(this.state);
+    event.preventDefault();
+    const { treeGuard, issue, updatedHeight } = this.state;
+    if (!treeGuard || treeGuard === "") {
+      alert("fill up treeguard option");
+      return;
+    }
+    if (!issue || issue === "") {
+      alert("fill up treeguard option");
+      return;
+    }
+    if (!updatedHeight || updatedHeight === "") {
+      alert("fill up treeguard option");
+      return;
+    }
+    submitEnvReport(this.props.karamkoduId, treeGuard, issue, updatedHeight)
+      .then(resp => {
+        console.log(resp);
+      })
+      .catch(err => console.log(err));
   }
 
   renderRadioGroup(label, key) {
@@ -18,13 +36,27 @@ export default class EnvironmentReport extends Component {
         <br />
         <div class="form-check-inline">
           <label class="form-check-label">
-            <input name={key} type="radio" class="form-check-input" onChange={()=>{this.setState({[key]:"YES"})}}/>
+            <input
+              name={key}
+              type="radio"
+              class="form-check-input"
+              onChange={() => {
+                this.setState({ [key]: "YES" });
+              }}
+            />
             Yes
           </label>
         </div>
         <div class="form-check-inline">
           <label class="form-check-label">
-            <input name={key} type="radio" class="form-check-input" onChange={()=>{this.setState({[key]:"NO"})}}/>
+            <input
+              name={key}
+              type="radio"
+              class="form-check-input"
+              onChange={() => {
+                this.setState({ [key]: "NO" });
+              }}
+            />
             No
           </label>
         </div>
@@ -43,7 +75,7 @@ export default class EnvironmentReport extends Component {
           <div class="row">
             <div class="col-md-2"></div>
             <div class="col-md-8">
-              <form onSubmit={(event) => this.submitReport(event)}>
+              <form onSubmit={event => this.submitReport(event)}>
                 <div class="row" className="rowstyle">
                   <div class="form-group">
                     <label>Plant Height</label>
@@ -51,7 +83,9 @@ export default class EnvironmentReport extends Component {
                       type="number"
                       class="form-control"
                       placeholder="Enter current height of plant(in feet)"
-                      onChange={(event)=>{this.setState({updatedHeight:event.target.value})}}
+                      onChange={event => {
+                        this.setState({ updatedHeight: event.target.value });
+                      }}
                     />
                   </div>
                   {this.renderRadioGroup(
@@ -73,3 +107,9 @@ export default class EnvironmentReport extends Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  return { karamkoduId: state.karamkoduId };
+};
+
+export default connect(mapStateToProps)(EnvironmentReport);
