@@ -3,7 +3,9 @@ import axios from "axios";
 axios.interceptors.request.use(
   config => {
     if ("token" in localStorage) {
-      const token = window.atob(localStorage.getItem("token")).replace("kk");
+      const token = window
+        .atob(localStorage.getItem("token"))
+        .replace("kk", "");
       if (token) {
         config.headers["Authorization"] = "Bearer " + token;
       }
@@ -21,7 +23,6 @@ axios.interceptors.response.use(
   },
   function(error) {
     const originalRequest = error.config;
-    console.log(error);
     const url = originalRequest.url.replace(
       "http://localhost/karamkoduapi/",
       ""
