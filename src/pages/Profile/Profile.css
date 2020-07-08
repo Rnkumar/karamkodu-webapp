@@ -25,3 +25,9 @@
   height: 100px;
   width: 100px;
 }
+
+.profile_image {
+  height: 30vh;
+  width: 30vh;
+  padding: 20px;
+}

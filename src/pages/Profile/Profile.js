@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import rehabilitationImage from "./../../images/profile/1.png";
 import environmentImage from "./../../images/profile/2.png";
 import educationImage from "./../../images/profile/3.png";
+import profile from "./../../images/profile/profile.png";
 import PopUp from "./../../components/PopUp/PopUp";
 import popUpData from "./data";
 import { getProfile } from "./../../backend/user";
@@ -79,15 +80,15 @@ class Profile extends Component {
     return (
       <center>
         <div>
-          <h3 className="topic">Profile</h3>
+          <img className="profile_image" src={profile} alt="PROFILE" />
+          <br />
           {this.state.loading && (
             <div class="spinner-border" role="status">
               <span class="sr-only">Loading...</span>
             </div>
           )}
-          <br />
           <h5>
-            Hi, Welcome back <span>{this.state.name}</span>
+            <span>{this.state.name}</span>
           </h5>
           <br />
           <br />

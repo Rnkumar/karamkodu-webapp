@@ -30,7 +30,8 @@ class TeamRequest extends Component {
         this.setState({ teamRequests: resp.data });
       })
       .catch(err => {
-        alert("Failed! Try Again");
+        if (!err.response || err.response.status !== 404)
+          alert("Failed! Try Again");
       });
   }
 

@@ -49,13 +49,21 @@ class Team extends Component {
             />
             <span style={{ float: "left", marginTop: "5px" }}>{item.name}</span>
           </div>
-          <div class="col-sm-4 d-flex justify-content-center">
+          <div class="col-sm-4">
             <img
               src={phoneImage}
-              style={{ width: "32px", height: "32px", marginRight: "10px" }}
+              style={{
+                padding: "4px",
+                width: "40px",
+                height: "40px",
+                float: "left",
+                marginRight: "10px"
+              }}
               alt="phone logo"
             />
-            <span style={{ marginTop: "5px" }}>{item.contact_number}</span>
+            <span style={{ marginTop: "5px", float: "left" }}>
+              {item.contact_number}
+            </span>
           </div>
           <div class="col-sm-3">
             <span class="badge" style={{ float: "right" }}>

@@ -22,6 +22,7 @@ class App extends React.Component {
     return (
       <Provider store={store}>
         <div className="App">
+          {/* <div className="top-container"></div> */}
           <BrowserRouter basename="/profile">
             <Switch>
               <PrivateRoute exact path="/" component={Profile} />

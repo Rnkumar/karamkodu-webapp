@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:8888";
+const BASE_URL = "http://karamkodu.in/karamkodu-rest-api";
 const LOGIN_URL = BASE_URL + "/login";
 const PROFILE_URL = BASE_URL + "/profile";
 const TEAM_MEMBER_STATUS = BASE_URL + "/team/status";
